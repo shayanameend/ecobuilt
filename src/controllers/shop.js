@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { catchAsync } from "../middlewares/catchAsync";
 import { BadResponse, NotFoundResponse } from "../lib/error";
-import { isAdmin, isAuthenticated, isSeller } from "../middlewares/auth";
+import { isAuthorized, isAuthenticated, isSeller } from "../middlewares/auth";
 import { ShopModel } from "../models/shop";
 import { handleImageUpload, handleImageDelete } from "../utils/image";
 import { sendEmail } from "../utils/mail";

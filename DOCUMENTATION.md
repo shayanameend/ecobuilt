@@ -19,7 +19,7 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Create New User Account
 
-- **Endpoint:** `POST /user`
+- **Endpoint:** `POST /api/users`
 - **Auth Required:** No
 - **Request Body:**
   ```json
@@ -30,19 +30,12 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
     "avatar": "base64_encoded_image"
   }
   ```
-- **Response:**
-  ```json
-  {
-    "success": true,
-    "message": "Please check your email: user@example.com to activate your account!",
-    "data": {}
-  }
-  ```
+- **Response:** Success message with activation instructions
 - **Description:** Registers a new user and sends an activation email.
 
 ### Activate User Account
 
-- **Endpoint:** `POST /user/activation`
+- **Endpoint:** `POST /api/users/activation`
 - **Auth Required:** No
 - **Request Body:**
   ```json
@@ -55,7 +48,7 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### User Login
 
-- **Endpoint:** `POST /user/login`
+- **Endpoint:** `POST /api/users/login`
 - **Auth Required:** No
 - **Request Body:**
   ```json
@@ -69,21 +62,21 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Get Current User
 
-- **Endpoint:** `GET /user/me`
+- **Endpoint:** `GET /api/users/me`
 - **Auth Required:** Yes (User)
 - **Response:** Returns current user data
 - **Description:** Retrieves the currently authenticated user's information.
 
 ### User Logout
 
-- **Endpoint:** `GET /user/logout`
+- **Endpoint:** `GET /api/users/logout`
 - **Auth Required:** No
 - **Response:** Success message
 - **Description:** Clears the authentication cookie.
 
 ### Update User Information
 
-- **Endpoint:** `PUT /user/info`
+- **Endpoint:** `PUT /api/users/info`
 - **Auth Required:** Yes (User)
 - **Request Body:**
   ```json
@@ -99,7 +92,7 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Update User Avatar
 
-- **Endpoint:** `PUT /user/avatar`
+- **Endpoint:** `PUT /api/users/avatar`
 - **Auth Required:** Yes (User)
 - **Request Body:**
   ```json
@@ -112,14 +105,14 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Get All Users (Admin)
 
-- **Endpoint:** `GET /user/admin/all`
+- **Endpoint:** `GET /api/users/admin/all`
 - **Auth Required:** Yes (Admin)
 - **Response:** Returns list of all users
 - **Description:** Admin endpoint to retrieve all registered users.
 
 ### Delete User (Admin)
 
-- **Endpoint:** `DELETE /user/admin/:id`
+- **Endpoint:** `DELETE /api/users/admin/:id`
 - **Auth Required:** Yes (Admin)
 - **Response:** Returns ID of deleted user
 - **Description:** Admin endpoint to delete a user account.
@@ -128,7 +121,7 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Create Shop
 
-- **Endpoint:** `POST /shop`
+- **Endpoint:** `POST /api/shops`
 - **Auth Required:** No
 - **Request Body:**
   ```json
@@ -147,7 +140,7 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Activate Shop
 
-- **Endpoint:** `POST /shop/activation`
+- **Endpoint:** `POST /api/shops/activation`
 - **Auth Required:** No
 - **Request Body:**
   ```json
@@ -160,7 +153,7 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Shop Login
 
-- **Endpoint:** `POST /shop/login`
+- **Endpoint:** `POST /api/shops/login`
 - **Auth Required:** No
 - **Request Body:**
   ```json
@@ -174,28 +167,28 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Get Shop Profile
 
-- **Endpoint:** `GET /shop/me`
+- **Endpoint:** `GET /api/shops/me`
 - **Auth Required:** Yes (Seller)
 - **Response:** Returns current shop data
 - **Description:** Retrieves the currently authenticated shop's information.
 
 ### Shop Logout
 
-- **Endpoint:** `GET /shop/logout`
+- **Endpoint:** `GET /api/shops/logout`
 - **Auth Required:** No
 - **Response:** Success message
 - **Description:** Clears the seller authentication cookie.
 
 ### Get Shop by ID
 
-- **Endpoint:** `GET /shop/:id`
+- **Endpoint:** `GET /api/shops/:id`
 - **Auth Required:** No
 - **Response:** Returns shop data
 - **Description:** Retrieves information about a specific shop.
 
 ### Update Shop Avatar
 
-- **Endpoint:** `PUT /shop/avatar`
+- **Endpoint:** `PUT /api/shops/avatar`
 - **Auth Required:** Yes (Seller)
 - **Request Body:**
   ```json
@@ -208,7 +201,7 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Update Shop Information
 
-- **Endpoint:** `PUT /shop/info`
+- **Endpoint:** `PUT /api/shops/info`
 - **Auth Required:** Yes (Seller)
 - **Request Body:**
   ```json
@@ -225,7 +218,7 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Update Withdraw Method
 
-- **Endpoint:** `PUT /shop/withdraw-method`
+- **Endpoint:** `PUT /api/shops/withdraw-method`
 - **Auth Required:** Yes (Seller)
 - **Request Body:**
   ```json
@@ -245,21 +238,21 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Delete Withdraw Method
 
-- **Endpoint:** `DELETE /shop/withdraw-method`
+- **Endpoint:** `DELETE /api/shops/withdraw-method`
 - **Auth Required:** Yes (Seller)
 - **Response:** Returns updated shop data
 - **Description:** Removes the shop's current withdraw method.
 
 ### Get All Shops (Admin)
 
-- **Endpoint:** `GET /shop/admin/all`
+- **Endpoint:** `GET /api/shops/admin/all`
 - **Auth Required:** Yes (Admin)
 - **Response:** Returns list of all shops
 - **Description:** Admin endpoint to retrieve all registered shops.
 
 ### Delete Shop (Admin)
 
-- **Endpoint:** `DELETE /shop/admin/:id`
+- **Endpoint:** `DELETE /api/shops/admin/:id`
 - **Auth Required:** Yes (Admin)
 - **Response:** Returns ID of deleted shop
 - **Description:** Admin endpoint to delete a shop account.
@@ -268,28 +261,28 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Get All Products
 
-- **Endpoint:** `GET /product`
+- **Endpoint:** `GET /api/products`
 - **Auth Required:** No
 - **Response:** Returns all products
 - **Description:** Retrieves all available products across all shops.
 
 ### Get Shop Products
 
-- **Endpoint:** `GET /product/shop/:shopId`
+- **Endpoint:** `GET /api/products/shop/:shopId`
 - **Auth Required:** No
 - **Response:** Returns all products for a specific shop
 - **Description:** Retrieves all products from a specific shop.
 
 ### Get All Products (Admin)
 
-- **Endpoint:** `GET /product/admin`
+- **Endpoint:** `GET /api/products/admin`
 - **Auth Required:** Yes (Admin)
 - **Response:** Returns all products
 - **Description:** Admin endpoint to retrieve all products.
 
 ### Create Product
 
-- **Endpoint:** `POST /product`
+- **Endpoint:** `POST /api/products`
 - **Auth Required:** Yes (Seller)
 - **Request Body:**
   ```json
@@ -310,7 +303,7 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Add Product Review
 
-- **Endpoint:** `PUT /product/:productId/review`
+- **Endpoint:** `PUT /api/products/:productId/review`
 - **Auth Required:** Yes (User)
 - **Request Body:**
   ```json
@@ -325,7 +318,7 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Delete Product
 
-- **Endpoint:** `DELETE /product/:productId`
+- **Endpoint:** `DELETE /api/products/:productId`
 - **Auth Required:** Yes (Seller)
 - **Response:** Returns ID of deleted product
 - **Description:** Deletes a specific product.
@@ -334,28 +327,28 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Get User Orders
 
-- **Endpoint:** `GET /order/user/:userId`
+- **Endpoint:** `GET /api/orders/user/:userId`
 - **Auth Required:** Yes (User)
 - **Response:** Returns all orders for the user
 - **Description:** Retrieves all orders placed by a specific user.
 
 ### Get Shop Orders
 
-- **Endpoint:** `GET /order/seller/:shopId`
+- **Endpoint:** `GET /api/orders/seller/:shopId`
 - **Auth Required:** Yes (Seller)
 - **Response:** Returns all orders for the shop
 - **Description:** Retrieves all orders for a specific shop.
 
 ### Get All Orders (Admin)
 
-- **Endpoint:** `GET /order/admin`
+- **Endpoint:** `GET /api/orders/admin`
 - **Auth Required:** Yes (Admin)
 - **Response:** Returns all orders
 - **Description:** Admin endpoint to retrieve all orders.
 
 ### Create Order
 
-- **Endpoint:** `POST /order`
+- **Endpoint:** `POST /api/orders`
 - **Auth Required:** Yes (User)
 - **Request Body:**
   ```json
@@ -393,7 +386,7 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Update Order Status
 
-- **Endpoint:** `PUT /order/:orderId/status`
+- **Endpoint:** `PUT /api/orders/:orderId/status`
 - **Auth Required:** Yes (Seller)
 - **Request Body:**
   ```json
@@ -406,7 +399,7 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Request Refund
 
-- **Endpoint:** `PUT /order/:orderId/refund-request`
+- **Endpoint:** `PUT /api/orders/:orderId/refund-request`
 - **Auth Required:** Yes (User)
 - **Request Body:**
   ```json
@@ -419,7 +412,7 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Process Refund
 
-- **Endpoint:** `PUT /order/:orderId/refund-success`
+- **Endpoint:** `PUT /api/orders/:orderId/refund-success`
 - **Auth Required:** Yes (Seller)
 - **Request Body:**
   ```json
@@ -434,14 +427,14 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Get All Withdraw Requests
 
-- **Endpoint:** `GET /withdraw`
+- **Endpoint:** `GET /api/withdraws`
 - **Auth Required:** Yes (Admin)
 - **Response:** Returns all withdraw requests
 - **Description:** Admin endpoint to retrieve all withdraw requests.
 
 ### Create Withdraw Request
 
-- **Endpoint:** `POST /withdraw`
+- **Endpoint:** `POST /api/withdraws`
 - **Auth Required:** Yes (Seller)
 - **Request Body:**
   ```json
@@ -454,7 +447,7 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Process Withdraw Request
 
-- **Endpoint:** `PUT /withdraw/:id`
+- **Endpoint:** `PUT /api/withdraws/:id`
 - **Auth Required:** Yes (Admin)
 - **Request Body:**
   ```json
@@ -469,14 +462,14 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Get Stripe API Key
 
-- **Endpoint:** `GET /payment/stripe-key`
+- **Endpoint:** `GET /api/payments/stripe-key`
 - **Auth Required:** Yes (User)
 - **Response:** Returns Stripe API key
 - **Description:** Retrieves the public Stripe API key for client-side payment processing.
 
 ### Create Payment Intent
 
-- **Endpoint:** `POST /payment/process`
+- **Endpoint:** `POST /api/payments/process`
 - **Auth Required:** Yes (User)
 - **Request Body:**
   ```json
@@ -490,7 +483,7 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Confirm Payment
 
-- **Endpoint:** `POST /payment/confirm`
+- **Endpoint:** `POST /api/payments/confirm`
 - **Auth Required:** Yes (User)
 - **Request Body:**
   ```json
@@ -505,21 +498,21 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Get Seller Coupons
 
-- **Endpoint:** `GET /coupon/seller/:id`
+- **Endpoint:** `GET /api/coupons/seller/:id`
 - **Auth Required:** Yes (Seller)
 - **Response:** Returns all coupons for the seller
 - **Description:** Retrieves all coupons created by a specific seller.
 
 ### Get Coupon by Name
 
-- **Endpoint:** `GET /coupon/value/:name`
+- **Endpoint:** `GET /api/coupons/value/:name`
 - **Auth Required:** No
 - **Response:** Returns coupon details
 - **Description:** Retrieves details of a specific coupon by its code.
 
 ### Create Coupon
 
-- **Endpoint:** `POST /coupon`
+- **Endpoint:** `POST /api/coupons`
 - **Auth Required:** Yes (Seller)
 - **Request Body:**
   ```json
@@ -537,7 +530,7 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Delete Coupon
 
-- **Endpoint:** `DELETE /coupon/:id`
+- **Endpoint:** `DELETE /api/coupons/:id`
 - **Auth Required:** Yes (Seller)
 - **Response:** Returns deleted coupon data
 - **Description:** Deletes a specific coupon.
@@ -546,28 +539,28 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Get All Events
 
-- **Endpoint:** `GET /event`
+- **Endpoint:** `GET /api/events`
 - **Auth Required:** No
 - **Response:** Returns all events
 - **Description:** Retrieves all active events.
 
 ### Get Shop Events
 
-- **Endpoint:** `GET /event/shop/:shopId`
+- **Endpoint:** `GET /api/events/shop/:shopId`
 - **Auth Required:** No
 - **Response:** Returns all events for a specific shop
 - **Description:** Retrieves all events created by a specific shop.
 
 ### Get All Events (Admin)
 
-- **Endpoint:** `GET /event/admin`
+- **Endpoint:** `GET /api/events/admin`
 - **Auth Required:** Yes (Admin)
 - **Response:** Returns all events
 - **Description:** Admin endpoint to retrieve all events.
 
 ### Create Event
 
-- **Endpoint:** `POST /event`
+- **Endpoint:** `POST /api/events`
 - **Auth Required:** Yes (Seller)
 - **Request Body:**
   ```json
@@ -588,7 +581,7 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Delete Event
 
-- **Endpoint:** `DELETE /event/:id`
+- **Endpoint:** `DELETE /api/events/:id`
 - **Auth Required:** Yes (Seller)
 - **Response:** Returns ID of deleted event
 - **Description:** Deletes a specific event.
@@ -597,7 +590,7 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Create Conversation
 
-- **Endpoint:** `POST /conversation`
+- **Endpoint:** `POST /api/conversations`
 - **Auth Required:** No
 - **Request Body:**
   ```json
@@ -612,21 +605,21 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Get Seller Conversations
 
-- **Endpoint:** `GET /conversation/seller/:id`
+- **Endpoint:** `GET /api/conversations/seller/:id`
 - **Auth Required:** Yes (Seller)
 - **Response:** Returns all conversations for the seller
 - **Description:** Retrieves all conversations involving a specific seller.
 
 ### Get User Conversations
 
-- **Endpoint:** `GET /conversation/user/:id`
+- **Endpoint:** `GET /api/conversations/user/:id`
 - **Auth Required:** Yes (User)
 - **Response:** Returns all conversations for the user
 - **Description:** Retrieves all conversations involving a specific user.
 
 ### Update Last Message
 
-- **Endpoint:** `PUT /conversation/:id/last-message`
+- **Endpoint:** `PUT /api/conversations/:id/last-message`
 - **Auth Required:** No
 - **Request Body:**
   ```json
@@ -642,16 +635,16 @@ This documentation provides details about all API endpoints for the EcoBuilt pla
 
 ### Send Message
 
-- **Endpoint:** `POST /message`
-- **Auth Required:** Yes (User)
+- **Endpoint:** `POST /api/messages`
+- **Auth Required:** No
 - **Request Body:**
   ```json
   {
     "conversationId": "conversation_id",
     "text": "Message content",
     "sender": "user_id",
-    "images": ["base64_image1", "base64_image2"]
+    "images": ["base64_image1"]
   }
   ```
-- **Response:** Returns sent message
+- **Response:** Returns created message
 - **Description:** Sends a new message in a conversation.
