@@ -1,0 +1,73 @@
+import { Router } from "express";
+import { catchAsync } from "@/middlewares/catchAsync";
+import { BadRequestResponse } from "@/lib/error";
+import { isAuthenticated } from "@/middlewares/auth";
+import { stripe } from "@/lib/stripe";
+import { env } from "@/lib/env";
+
+const router = Router();
+
+// GET routes
+router.get(
+  "/stripe-key",
+  isAuthenticated,
+  catchAsync(async (_request, response) => {
+    return response.success(
+      { data: { apiKey: env.STRIPE_API_KEY } },
+      { message: "Stripe API key retrieved successfully" }
+    );
+  })
+);
+
+// POST routes
+router.post(
+  "/process",
+  isAuthenticated,
+  catchAsync(async (request, response) => {
+    const { amount, currency = "usd" } = request.body;
+
+    if (!amount || amount <= 0) {
+      throw new BadRequestResponse("Valid amount is required");
+    }
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount,
+      currency,
+      metadata: {
+        userId: request.user.id,
+        timestamp: new Date().toISOString(),
+      },
+    });
+
+    return response.success(
+      {
+        data: {
+          clientSecret: paymentIntent.client_secret,
+          paymentIntentId: paymentIntent.id,
+        },
+      },
+      { message: "Payment intent created successfully" }
+    );
+  })
+);
+
+router.post(
+  "/confirm",
+  isAuthenticated,
+  catchAsync(async (request, response) => {
+    const { paymentIntentId } = request.body;
+
+    if (!paymentIntentId) {
+      throw new BadRequestResponse("Payment intent ID is required");
+    }
+
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+    return response.success(
+      { data: { paymentIntent } },
+      { message: "Payment status retrieved successfully" }
+    );
+  })
+);
+
+export const paymentRouter = router;
