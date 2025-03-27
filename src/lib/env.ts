@@ -11,7 +11,7 @@ const envSchema = zod.object({
   APP_NAME: zod.string(),
   APP_SUPPORT_EMAIL: zod.string().email(),
   APP_ADMIN_EMAIL: zod.string().email(),
-  ACTIVATION_SECRET: zod.string(),
+  EMAIL_VERIFICATION_SECRET: zod.string(),
   NODEMAILER_HOST: zod.string(),
   NODEMAILER_PORT: zod.coerce.number(),
   NODEMAILER_SECURE: zod.string(),
@@ -22,6 +22,10 @@ const envSchema = zod.object({
   CLOUDINARY_NAME: zod.string(),
   CLOUDINARY_API_KEY: zod.string(),
   CLOUDINARY_API_SECRET: zod.string(),
+  CLIENT_URL: zod.string().url(),
+  AWS_ACCESS_KEY_ID: zod.string(),
+  AWS_SECRET_ACCESS_KEY: zod.string(),
+  AWS_REGION: zod.string(),
 });
 
 export const env = envSchema.parse(process.env);

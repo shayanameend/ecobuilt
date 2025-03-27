@@ -8,7 +8,7 @@ import { ShopModel } from "@/models/shop";
 import { catchAsync } from "@/middlewares/catchAsync";
 import { env } from "@/lib/env";
 
-exports.isAuthenticated = catchAsync(
+export const isAuthenticated = catchAsync(
   async (request: Request, _response: Response, next: NextFunction) => {
     const { token } = request.cookies;
 
@@ -30,7 +30,7 @@ exports.isAuthenticated = catchAsync(
   }
 );
 
-exports.isSeller = catchAsync(
+export const isSeller = catchAsync(
   async (request: Request, _response: Response, next: NextFunction) => {
     const { seller_token } = request.cookies;
     if (!seller_token) {
@@ -51,7 +51,7 @@ exports.isSeller = catchAsync(
   }
 );
 
-exports.isAdmin = (...roles: string[]) => {
+export const isAdmin = (...roles: string[]) => {
   return (request: Request, _response: Response, next: NextFunction) => {
     if (!roles.includes(request.user.role)) {
       throw new ForbiddenResponse(
