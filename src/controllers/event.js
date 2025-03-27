@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { catchAsync } from "@/middlewares/catchAsync";
-import { NotFoundResponse, BadRequestResponse } from "@/lib/error";
-import { isSeller, isAdmin, isAuthenticated } from "@/middlewares/auth";
+import { BadRequestResponse, NotFoundResponse } from "@/lib/error";
+import { isSeller } from "@/middlewares/auth";
 import { EventModel } from "@/models/event";
 import { ShopModel } from "@/models/shop";
-import { cloudinary } from "@/utils/cloudinary";
+import { handleImageUpload, handleImageDelete } from "@/utils/image";
 
 const router = Router();
 
@@ -66,25 +66,11 @@ router.post(
   isSeller,
   catchAsync(async (request, response) => {
     const shop = await ShopModel.findById(request.body.shopId);
-
     if (!shop) {
       throw new BadRequestResponse("Shop not found");
     }
 
-    const imagesLinks = await Promise.all(
-      (Array.isArray(request.body.images)
-        ? request.body.images
-        : [request.body.images]
-      ).map(async (image) => {
-        const result = await cloudinary.v2.uploader.upload(image, {
-          folder: "events",
-        });
-        return {
-          public_id: result.public_id,
-          url: result.secure_url,
-        };
-      })
-    );
+    const imagesLinks = await handleImageUpload(request.body.images, "EVENTS");
 
     const eventData = {
       ...request.body,
@@ -107,16 +93,12 @@ router.delete(
   isSeller,
   catchAsync(async (request, response) => {
     const event = await EventModel.findById(request.params.id);
-
     if (!event) {
       throw new NotFoundResponse("Event not found");
     }
 
-    await Promise.all(
-      event.images.map((image) =>
-        cloudinary.v2.uploader.destroy(image.public_id)
-      )
-    );
+    const publicIds = event.images.map((image) => image.public_id);
+    await handleImageDelete(publicIds);
 
     await EventModel.findByIdAndDelete(request.params.id);
 

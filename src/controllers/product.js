@@ -1,11 +1,10 @@
 import { Router } from "express";
 import { catchAsync } from "@/middlewares/catchAsync";
-import { NotFoundResponse, BadRequestResponse } from "@/lib/error";
-import { isSeller, isAuthenticated, isAdmin } from "@/middlewares/auth";
+import { BadRequestResponse, NotFoundResponse } from "@/lib/error";
+import { isSeller } from "@/middlewares/auth";
 import { ProductModel } from "@/models/product";
-import { OrderModel } from "@/models/order";
 import { ShopModel } from "@/models/shop";
-import { cloudinary } from "@/utils/cloudinary";
+import { handleImageUpload, handleImageDelete } from "@/utils/image";
 
 const router = Router();
 
@@ -84,17 +83,7 @@ router.post(
       throw new NotFoundResponse("Shop not found");
     }
 
-    const imagesArray = Array.isArray(images) ? images : [images];
-    const imagesLinks = await Promise.all(
-      imagesArray.map((image) =>
-        cloudinary.v2.uploader
-          .upload(image, { folder: "products" })
-          .then((result) => ({
-            public_id: result.public_id,
-            url: result.secure_url,
-          }))
-      )
-    );
+    const imagesLinks = await handleImageUpload(images, "PRODUCTS");
 
     const product = await ProductModel.create({
       ...productData,
@@ -173,16 +162,12 @@ router.delete(
   isSeller,
   catchAsync(async (request, response) => {
     const product = await ProductModel.findById(request.params.productId);
-
     if (!product) {
       throw new NotFoundResponse("Product not found");
     }
 
-    await Promise.all(
-      product.images.map((image) =>
-        cloudinary.v2.uploader.destroy(image.public_id)
-      )
-    );
+    const publicIds = product.images.map((image) => image.public_id);
+    await handleImageDelete(publicIds);
 
     await product.deleteOne();
 

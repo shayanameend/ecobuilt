@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
-const coupounSchema = new mongoose.Schema({
+const couponSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "Please enter your coupoun name!"],
+    required: [true, "Please enter your coupon name!"],
     unique: true,
   },
   value: {
@@ -29,4 +29,4 @@ const coupounSchema = new mongoose.Schema({
   },
 });
 
-export const CoupounModel = mongoose.model("Coupoun", coupounSchema);
+export const CouponModel = mongoose.model("Coupon", couponSchema);

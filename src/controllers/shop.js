@@ -1,15 +1,10 @@
 import { Router } from "express";
 import { catchAsync } from "@/middlewares/catchAsync";
-import {
-  NotFoundResponse,
-  BadRequestResponse,
-  UnauthorizedResponse,
-} from "@/lib/error";
-import { isAuthenticated, isSeller, isAdmin } from "@/middlewares/auth";
+import { BadRequestResponse, NotFoundResponse } from "@/lib/error";
+import { isSeller } from "@/middlewares/auth";
 import { ShopModel } from "@/models/shop";
-import { cloudinary } from "@/utils/cloudinary";
-import { sendMail } from "@/utils/sendMail";
-import { createToken } from "@/utils/token";
+import { handleImageUpload, handleImageDelete } from "@/utils/image";
+import { createToken } from "@/lib/jwt";
 import { env } from "@/lib/env";
 
 const router = Router();
@@ -80,9 +75,7 @@ router.post(
       throw new BadRequestResponse("Shop already exists with this email");
     }
 
-    const avatarUpload = await cloudinary.v2.uploader.upload(avatar, {
-      folder: "shops",
-    });
+    const avatarUpload = await handleImageUpload(avatar, "SHOPS");
 
     const activationToken = createToken(
       {
@@ -92,10 +85,7 @@ router.post(
         address,
         phoneNumber,
         zipCode,
-        avatar: {
-          public_id: avatarUpload.public_id,
-          url: avatarUpload.secure_url,
-        },
+        avatar: avatarUpload,
       },
       env.EMAIL_VERIFICATION_SECRET,
       "5m"
@@ -233,22 +223,16 @@ router.put(
     }
 
     if (shop.avatar?.public_id) {
-      await cloudinary.v2.uploader.destroy(shop.avatar.public_id);
+      await handleImageDelete(shop.avatar.public_id);
     }
 
-    const avatarUpload = await cloudinary.v2.uploader.upload(
-      request.body.avatar,
-      {
-        folder: "shops",
-        width: 150,
-      }
-    );
+    const avatar = await handleImageUpload(request.body.avatar, "SHOPS", {
+      width: 150,
+      height: 150,
+      crop: "fill",
+    });
 
-    shop.avatar = {
-      public_id: avatarUpload.public_id,
-      url: avatarUpload.secure_url,
-    };
-
+    shop.avatar = avatar;
     await shop.save();
 
     return response.success(

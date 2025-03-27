@@ -2,7 +2,7 @@ import { Router } from "express";
 import { catchAsync } from "@/middlewares/catchAsync";
 import { NotFoundResponse, BadRequestResponse } from "@/lib/error";
 import { isSeller } from "@/middlewares/auth";
-import { CoupounModel } from "@/models/coupoun";
+import { CouponModel } from "@/models/coupon";
 
 const router = Router();
 
@@ -11,20 +11,20 @@ router.get(
   "/seller/:id",
   isSeller,
   catchAsync(async (request, response) => {
-    const coupouns = await CoupounModel.find({
+    const coupons = await CouponModel.find({
       shopId: request.seller.id,
     }).sort({ updatedAt: -1, createdAt: -1 });
 
-    if (!coupouns.length) {
-      throw new NotFoundResponse("No coupouns found");
+    if (!coupons.length) {
+      throw new NotFoundResponse("No coupons found");
     }
 
     return response.success(
       {
-        data: { coupouns },
+        data: { coupons },
       },
       {
-        message: "Coupouns retrieved successfully",
+        message: "Coupons retrieved successfully",
       }
     );
   })
@@ -33,20 +33,20 @@ router.get(
 router.get(
   "/value/:name",
   catchAsync(async (request, response) => {
-    const coupoun = await CoupounModel.findOne({
+    const coupon = await CouponModel.findOne({
       name: request.params.name,
     });
 
-    if (!coupoun) {
-      throw new NotFoundResponse("Coupoun not found");
+    if (!coupon) {
+      throw new NotFoundResponse("Coupon not found");
     }
 
     return response.success(
       {
-        data: { coupoun },
+        data: { coupon },
       },
       {
-        message: "Coupoun retrieved successfully",
+        message: "Coupon retrieved successfully",
       }
     );
   })
@@ -57,22 +57,22 @@ router.post(
   "/",
   isSeller,
   catchAsync(async (request, response) => {
-    const existingCoupoun = await CoupounModel.findOne({
+    const existingCoupon = await CouponModel.findOne({
       name: request.body.name,
     });
 
-    if (existingCoupoun) {
-      throw new BadRequestResponse("Coupoun already exists");
+    if (existingCoupon) {
+      throw new BadRequestResponse("Coupon already exists");
     }
 
-    const coupoun = await CoupounModel.create(request.body);
+    const coupon = await CouponModel.create(request.body);
 
     return response.created(
       {
-        data: { coupoun },
+        data: { coupon },
       },
       {
-        message: "Coupoun created successfully",
+        message: "Coupon created successfully",
       }
     );
   })
@@ -83,21 +83,21 @@ router.delete(
   "/:id",
   isSeller,
   catchAsync(async (request, response) => {
-    const coupoun = await CoupounModel.findByIdAndDelete(request.params.id);
+    const coupon = await CouponModel.findByIdAndDelete(request.params.id);
 
-    if (!coupoun) {
-      throw new NotFoundResponse("Coupoun not found");
+    if (!coupon) {
+      throw new NotFoundResponse("Coupon not found");
     }
 
     return response.success(
       {
-        data: { coupoun },
+        data: { coupon },
       },
       {
-        message: "Coupoun deleted successfully",
+        message: "Coupon deleted successfully",
       }
     );
   })
 );
 
-export const coupounRouter = router;
+export const couponRouter = router;

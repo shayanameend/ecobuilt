@@ -1,15 +1,14 @@
 import { Router } from "express";
 import { catchAsync } from "@/middlewares/catchAsync";
 import {
-  NotFoundResponse,
   BadRequestResponse,
+  NotFoundResponse,
   UnauthorizedResponse,
 } from "@/lib/error";
 import { isAuthenticated } from "@/middlewares/auth";
 import { UserModel } from "@/models/user";
-import { cloudinary } from "@/utils/cloudinary";
-import { sendMail } from "@/utils/sendMail";
-import { createToken } from "@/utils/token";
+import { handleImageUpload, handleImageDelete } from "@/utils/image";
+import { createToken } from "@/lib/jwt";
 import { env } from "@/lib/env";
 
 const router = Router();
@@ -64,19 +63,14 @@ router.post(
       throw new BadRequestResponse("User already exists with this email");
     }
 
-    const avatarUpload = await cloudinary.v2.uploader.upload(avatar, {
-      folder: "avatars",
-    });
+    const avatarUpload = await handleImageUpload(avatar, "AVATARS");
 
     const activationToken = createToken(
       {
         name,
         email,
         password,
-        avatar: {
-          public_id: avatarUpload.public_id,
-          url: avatarUpload.secure_url,
-        },
+        avatar: avatarUpload,
       },
       env.EMAIL_VERIFICATION_SECRET,
       "5m"
@@ -208,22 +202,16 @@ router.put(
     }
 
     if (user.avatar?.public_id) {
-      await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+      await handleImageDelete(user.avatar.public_id);
     }
 
-    const avatarUpload = await cloudinary.v2.uploader.upload(
-      request.body.avatar,
-      {
-        folder: "avatars",
-        width: 150,
-      }
-    );
+    const avatar = await handleImageUpload(request.body.avatar, "AVATARS", {
+      width: 150,
+      height: 150,
+      crop: "fill",
+    });
 
-    user.avatar = {
-      public_id: avatarUpload.public_id,
-      url: avatarUpload.secure_url,
-    };
-
+    user.avatar = avatar;
     await user.save();
 
     return response.success(
