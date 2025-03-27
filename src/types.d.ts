@@ -1,4 +1,4 @@
-import type { OtpType, Role, UserStatus } from "@prisma/client";
+import { ObjectIdToString } from "mongoose";
 
 export type TokenType = OtpType | "ACCESS";
 
@@ -25,14 +25,16 @@ declare global {
   namespace Express {
     export interface Request {
       user: {
-        id: string;
+        _id: ObjectId;
+        name: string;
         email: string;
-        status: UserStatus;
-        role: Role;
-        isVerified: boolean;
-        isDeleted: boolean;
-        createdAt: Date;
-        updatedAt: Date;
+        role: string;
+      };
+      seller: {
+        _id: ObjectId;
+        name: string;
+        email: string;
+        role: string;
       };
     }
     export interface Response {
