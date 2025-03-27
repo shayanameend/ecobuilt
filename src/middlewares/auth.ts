@@ -51,7 +51,7 @@ export const isSeller = catchAsync(
   }
 );
 
-export const isAdmin = (...roles: string[]) => {
+export const isAuthorized = (...roles: string[]) => {
   return (request: Request, _response: Response, next: NextFunction) => {
     if (!roles.includes(request.user.role)) {
       throw new ForbiddenResponse(

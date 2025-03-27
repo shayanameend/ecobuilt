@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { catchAsync } from "../middlewares/catchAsync";
 import { NotFoundResponse, BadResponse } from "../lib/error";
-import { isSeller, isAuthenticated, isAdmin } from "../middlewares/auth";
+import { isSeller, isAuthenticated, isAuthorized } from "../middlewares/auth";
 import { WithdrawModel } from "../models/withdraw";
 import { ShopModel } from "../models/shop";
 import { sendEmail } from "../utils/mail";
@@ -12,7 +12,7 @@ const router = Router();
 router.get(
   "/",
   isAuthenticated,
-  isAdmin("Admin"),
+  isAuthorized("Admin"),
   catchAsync(async (_request, response) => {
     const withdraws = await WithdrawModel.find().sort({
       updatedAt: -1,
@@ -76,7 +76,7 @@ router.post(
 router.put(
   "/:id",
   isAuthenticated,
-  isAdmin("Admin"),
+  isAuthorized("Admin"),
   catchAsync(async (request, response) => {
     const { sellerId } = request.body;
 

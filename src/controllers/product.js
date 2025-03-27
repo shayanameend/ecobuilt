@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { catchAsync } from "../middlewares/catchAsync";
 import { BadResponse, NotFoundResponse } from "../lib/error";
-import { isAdmin, isAuthenticated, isSeller } from "../middlewares/auth";
+import { isAuthorized, isAuthenticated, isSeller } from "../middlewares/auth";
 import { ProductModel } from "../models/product";
 import { ShopModel } from "../models/shop";
 import { handleImageUpload, handleImageDelete } from "../utils/image";
@@ -49,7 +49,7 @@ router.get(
 router.get(
   "/admin",
   isAuthenticated,
-  isAdmin("Admin"),
+  isAuthorized("Admin"),
   catchAsync(async (_request, response) => {
     const products = await ProductModel.find().sort({
       updatedAt: -1,

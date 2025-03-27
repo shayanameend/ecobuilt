@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { catchAsync } from "../middlewares/catchAsync";
 import { NotFoundResponse, BadResponse } from "../lib/error";
-import { isAuthenticated, isSeller, isAdmin } from "../middlewares/auth";
+import { isAuthenticated, isSeller, isAuthorized } from "../middlewares/auth";
 import { OrderModel } from "../models/order";
 import { ShopModel } from "../models/shop";
 import { ProductModel } from "../models/product";
@@ -50,7 +50,7 @@ router.get(
 router.get(
   "/admin",
   isAuthenticated,
-  isAdmin("Admin"),
+  isAuthorized("Admin"),
   catchAsync(async (_request, response) => {
     const orders = await OrderModel.find().sort({
       deliveredAt: -1,
