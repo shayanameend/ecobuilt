@@ -92,7 +92,7 @@ shopSchema.pre("save", async function (next) {
 
 shopSchema.methods.getJwtToken = function () {
   return jwt.sign(
-    { id: this._id },
+    { _id: this._id },
     env.JWT_SECRET_KEY as string,
     {
       expiresIn: env.JWT_EXPIRES,

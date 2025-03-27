@@ -115,7 +115,7 @@ router.get(
   "/me",
   isSeller,
   catchAsync(async (request, response) => {
-    const shop = await ShopModel.findById(request.seller.id);
+    const shop = await ShopModel.findById(request.seller._id);
     if (!shop) {
       throw new NotFoundResponse("Shop not found");
     }
@@ -161,7 +161,7 @@ router.put(
   "/avatar",
   isSeller,
   catchAsync(async (request, response) => {
-    const shop = await ShopModel.findById(request.seller.id);
+    const shop = await ShopModel.findById(request.seller._id);
 
     if (request.body.avatar) {
       if (shop.avatar?.public_id) {
@@ -189,7 +189,7 @@ router.put(
   catchAsync(async (request, response) => {
     const { name, description, address, phoneNumber, zipCode } = request.body;
 
-    const shop = await ShopModel.findById(request.seller.id);
+    const shop = await ShopModel.findById(request.seller._id);
     if (!shop) {
       throw new NotFoundResponse("Shop not found");
     }
@@ -214,7 +214,7 @@ router.put(
   isSeller,
   catchAsync(async (request, response) => {
     const shop = await ShopModel.findByIdAndUpdate(
-      request.seller.id,
+      request.seller._id,
       { withdrawMethod: request.body.withdrawMethod },
       { new: true }
     );
@@ -231,7 +231,7 @@ router.delete(
   "/withdraw-method",
   isSeller,
   catchAsync(async (request, response) => {
-    const shop = await ShopModel.findById(request.seller.id);
+    const shop = await ShopModel.findById(request.seller._id);
     if (!shop) {
       throw new NotFoundResponse("Shop not found");
     }

@@ -108,7 +108,7 @@ router.get(
   "/me",
   isAuthenticated,
   catchAsync(async (request, response) => {
-    const user = await UserModel.findById(request.user.id);
+    const user = await UserModel.findById(request.user._id);
     if (!user) {
       throw new NotFoundResponse("User not found");
     }
@@ -168,7 +168,7 @@ router.put(
   "/avatar",
   isAuthenticated,
   catchAsync(async (request, response) => {
-    const user = await UserModel.findById(request.user.id);
+    const user = await UserModel.findById(request.user._id);
 
     if (request.body.avatar) {
       if (user.avatar?.public_id) {

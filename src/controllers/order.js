@@ -149,7 +149,7 @@ router.put(
       order.paymentInfo.status = "Succeeded";
       const serviceCharge = order.totalPrice * 0.1;
 
-      const seller = await ShopModel.findById(request.seller.id);
+      const seller = await ShopModel.findById(request.seller._id);
       if (!seller) {
         throw new NotFoundResponse("Seller not found");
       }

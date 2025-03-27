@@ -12,7 +12,7 @@ router.get(
   isSeller,
   catchAsync(async (request, response) => {
     const coupons = await CouponModel.find({
-      shopId: request.seller.id,
+      shopId: request.seller._id,
     }).sort({ updatedAt: -1, createdAt: -1 });
 
     if (!coupons.length) {

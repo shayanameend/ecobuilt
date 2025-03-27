@@ -18,7 +18,7 @@ export const isAuthenticated = catchAsync(
 
     const decoded = jwt.verify(token, env.JWT_SECRET_KEY);
 
-    const user = await UserModel.findById((decoded as jwt.JwtPayload).id);
+    const user = await UserModel.findById((decoded as jwt.JwtPayload)._id);
 
     if (!user) {
       throw new UnauthorizedResponse("User not found");
@@ -39,7 +39,7 @@ export const isSeller = catchAsync(
 
     const decoded = jwt.verify(seller_token, env.JWT_SECRET_KEY);
 
-    const shop = await ShopModel.findById((decoded as jwt.JwtPayload).id);
+    const shop = await ShopModel.findById((decoded as jwt.JwtPayload)._id);
 
     if (!shop) {
       throw new UnauthorizedResponse("Seller not found");

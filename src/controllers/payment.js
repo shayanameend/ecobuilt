@@ -39,7 +39,7 @@ router.post(
       amount,
       currency,
       metadata: {
-        userId: request.user.id,
+        userId: request.user._id,
         timestamp: new Date().toISOString(),
       },
     });
