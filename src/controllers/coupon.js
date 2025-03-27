@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { catchAsync } from "@/middlewares/catchAsync";
-import { NotFoundResponse, BadRequestResponse } from "@/lib/error";
-import { isSeller } from "@/middlewares/auth";
-import { CouponModel } from "@/models/coupon";
+import { catchAsync } from "../middlewares/catchAsync";
+import { NotFoundResponse, BadResponse } from "../lib/error";
+import { isSeller } from "../middlewares/auth";
+import { CouponModel } from "../models/coupon";
 
 const router = Router();
 
@@ -62,7 +62,7 @@ router.post(
     });
 
     if (existingCoupon) {
-      throw new BadRequestResponse("Coupon already exists");
+      throw new BadResponse("Coupon already exists");
     }
 
     const coupon = await CouponModel.create(request.body);

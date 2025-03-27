@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { catchAsync } from "@/middlewares/catchAsync";
-import { BadRequestResponse, NotFoundResponse } from "@/lib/error";
-import { isSeller } from "@/middlewares/auth";
-import { ProductModel } from "@/models/product";
-import { ShopModel } from "@/models/shop";
-import { handleImageUpload, handleImageDelete } from "@/utils/image";
+import { catchAsync } from "../middlewares/catchAsync";
+import { BadResponse, NotFoundResponse } from "../lib/error";
+import { isAdmin, isAuthenticated, isSeller } from "../middlewares/auth";
+import { ProductModel } from "../models/product";
+import { ShopModel } from "../models/shop";
+import { handleImageUpload, handleImageDelete } from "../utils/image";
 
 const router = Router();
 
@@ -75,7 +75,7 @@ router.post(
     const { shopId, images, ...productData } = request.body;
 
     if (!shopId || !images) {
-      throw new BadRequestResponse("Shop ID and images are required");
+      throw new BadResponse("Shop ID and images are required");
     }
 
     const shop = await ShopModel.findById(shopId);
@@ -108,7 +108,7 @@ router.put(
     const { productId } = request.params;
 
     if (!rating || !comment) {
-      throw new BadRequestResponse("Rating and comment are required");
+      throw new BadResponse("Rating and comment are required");
     }
 
     const product = await ProductModel.findById(productId);

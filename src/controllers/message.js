@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { catchAsync } from "@/middlewares/catchAsync";
-import { BadRequestResponse } from "@/lib/error";
-import { isAuthenticated } from "@/middlewares/auth";
-import { MessageModel } from "@/models/message";
-import { handleImageUpload } from "@/utils/image";
+import { catchAsync } from "../middlewares/catchAsync";
+import { BadResponse } from "../lib/error";
+import { isAuthenticated } from "../middlewares/auth";
+import { MessageModel } from "../models/message";
+import { handleImageUpload } from "../utils/image";
 
 const router = Router();
 
@@ -14,7 +14,7 @@ router.post(
     const { conversationId, text, sender, images } = request.body;
 
     if (!conversationId || !sender) {
-      throw new BadRequestResponse("Missing required fields");
+      throw new BadResponse("Missing required fields");
     }
 
     const messageData = {

@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { catchAsync } from "@/middlewares/catchAsync";
-import { isSeller, isAuthenticated } from "@/middlewares/auth";
-import { ConversationModel } from "@/models/conversation";
-import { NotFoundResponse } from "@/lib/error";
+import { catchAsync } from "../middlewares/catchAsync";
+import { isSeller, isAuthenticated } from "../middlewares/auth";
+import { ConversationModel } from "../models/conversation";
+import { NotFoundResponse } from "../lib/error";
 
 const router = Router();
 

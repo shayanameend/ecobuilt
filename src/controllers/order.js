@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { catchAsync } from "@/middlewares/catchAsync";
-import { NotFoundResponse, BadRequestResponse } from "@/lib/error";
-import { isAuthenticated, isSeller, isAdmin } from "@/middlewares/auth";
-import { OrderModel } from "@/models/order";
-import { ShopModel } from "@/models/shop";
-import { ProductModel } from "@/models/product";
+import { catchAsync } from "../middlewares/catchAsync";
+import { NotFoundResponse, BadResponse } from "../lib/error";
+import { isAuthenticated, isSeller, isAdmin } from "../middlewares/auth";
+import { OrderModel } from "../models/order";
+import { ShopModel } from "../models/shop";
+import { ProductModel } from "../models/product";
 
 const router = Router();
 
@@ -83,7 +83,7 @@ router.post(
       !totalPrice ||
       !paymentInfo
     ) {
-      throw new BadRequestResponse("Missing required order fields");
+      throw new BadResponse("Missing required order fields");
     }
 
     const shopItemsMap = new Map();
@@ -121,7 +121,7 @@ router.put(
   catchAsync(async (request, response) => {
     const { status } = request.body;
     if (!status) {
-      throw new BadRequestResponse("Status is required");
+      throw new BadResponse("Status is required");
     }
 
     const order = await OrderModel.findById(request.params.orderId);

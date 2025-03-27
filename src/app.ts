@@ -8,8 +8,8 @@ import { expandResponse } from "@/middlewares/response";
 import { env } from "@/lib/env";
 
 // Import all routers
-import { userRouter } from "@/controllers/user";
-import { shopRouter } from "@/controllers/shop";
+// import { userRouter } from "@/controllers/user";
+// import { shopRouter } from "@/controllers/shop";
 import { productRouter } from "@/controllers/product";
 import { eventRouter } from "@/controllers/event";
 import { couponRouter } from "@/controllers/coupon";
@@ -35,8 +35,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(expandResponse);
 
 // API Routes
-app.use("/api/users", userRouter);
-app.use("/api/shops", shopRouter);
+// app.use("/api/users", userRouter);
+// app.use("/api/shops", shopRouter);
 app.use("/api/products", productRouter);
 app.use("/api/events", eventRouter);
 app.use("/api/coupons", couponRouter);

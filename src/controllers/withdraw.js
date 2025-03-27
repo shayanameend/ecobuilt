@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { catchAsync } from "@/middlewares/catchAsync";
-import { NotFoundResponse, BadRequestResponse } from "@/lib/error";
-import { isSeller, isAuthenticated, isAdmin } from "@/middlewares/auth";
-import { WithdrawModel } from "@/models/withdraw";
-import { ShopModel } from "@/models/shop";
-import { sendMail } from "@/utils/sendMail";
+import { catchAsync } from "../middlewares/catchAsync";
+import { NotFoundResponse, BadResponse } from "../lib/error";
+import { isSeller, isAuthenticated, isAdmin } from "../middlewares/auth";
+import { WithdrawModel } from "../models/withdraw";
+import { ShopModel } from "../models/shop";
+import { sendEmail } from "../utils/mail";
 
 const router = Router();
 
@@ -38,7 +38,7 @@ router.post(
     const { amount } = request.body;
 
     if (!amount || amount <= 0) {
-      throw new BadRequestResponse("Valid amount is required");
+      throw new BadResponse("Valid amount is required");
     }
 
     const shop = await ShopModel.findById(request.seller._id);
@@ -47,7 +47,7 @@ router.post(
     }
 
     if (shop.availableBalance < amount) {
-      throw new BadRequestResponse("Insufficient balance");
+      throw new BadResponse("Insufficient balance");
     }
 
     const withdraw = await WithdrawModel.create({
@@ -59,7 +59,7 @@ router.post(
     shop.availableBalance -= amount;
     await shop.save();
 
-    await sendMail({
+    await sendEmail({
       email: request.seller.email,
       subject: "Withdraw Request Confirmation",
       message: `Hello ${request.seller.name}, Your withdraw request of $${amount} is being processed. Processing time is typically 3-7 business days.`,
@@ -81,7 +81,7 @@ router.put(
     const { sellerId } = request.body;
 
     if (!sellerId) {
-      throw new BadRequestResponse("Seller ID is required");
+      throw new BadResponse("Seller ID is required");
     }
 
     const withdraw = await WithdrawModel.findByIdAndUpdate(
@@ -112,7 +112,7 @@ router.put(
     seller.transactions = [...seller.transactions, transaction];
     await seller.save();
 
-    await sendMail({
+    await sendEmail({
       email: seller.email,
       subject: "Withdrawal Processed",
       message: `Hello ${seller.name}, Your withdrawal request of $${withdraw.amount} has been processed. The funds should arrive in your account within 3-7 business days.`,

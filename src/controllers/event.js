@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { catchAsync } from "@/middlewares/catchAsync";
-import { BadRequestResponse, NotFoundResponse } from "@/lib/error";
-import { isSeller } from "@/middlewares/auth";
-import { EventModel } from "@/models/event";
-import { ShopModel } from "@/models/shop";
-import { handleImageUpload, handleImageDelete } from "@/utils/image";
+import { catchAsync } from "../middlewares/catchAsync";
+import { BadResponse, NotFoundResponse } from "../lib/error";
+import { isAdmin, isAuthenticated, isSeller } from "../middlewares/auth";
+import { EventModel } from "../models/event";
+import { ShopModel } from "../models/shop";
+import { handleImageUpload, handleImageDelete } from "../utils/image";
 
 const router = Router();
 
@@ -67,7 +67,7 @@ router.post(
   catchAsync(async (request, response) => {
     const shop = await ShopModel.findById(request.body.shopId);
     if (!shop) {
-      throw new BadRequestResponse("Shop not found");
+      throw new BadResponse("Shop not found");
     }
 
     const imagesLinks = await handleImageUpload(request.body.images, "EVENTS");

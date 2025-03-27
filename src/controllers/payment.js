@@ -1,9 +1,14 @@
 import { Router } from "express";
-import { catchAsync } from "@/middlewares/catchAsync";
-import { BadRequestResponse } from "@/lib/error";
-import { isAuthenticated } from "@/middlewares/auth";
-import { stripe } from "@/lib/stripe";
-import { env } from "@/lib/env";
+import { catchAsync } from "../middlewares/catchAsync";
+import { BadResponse } from "../lib/error";
+import { isAuthenticated } from "../middlewares/auth";
+import { env } from "../lib/env";
+
+import Stripe from "stripe";
+
+const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
+  apiVersion: "2022-11-15",
+});
 
 const router = Router();
 
@@ -27,7 +32,7 @@ router.post(
     const { amount, currency = "usd" } = request.body;
 
     if (!amount || amount <= 0) {
-      throw new BadRequestResponse("Valid amount is required");
+      throw new BadResponse("Valid amount is required");
     }
 
     const paymentIntent = await stripe.paymentIntents.create({
@@ -58,7 +63,7 @@ router.post(
     const { paymentIntentId } = request.body;
 
     if (!paymentIntentId) {
-      throw new BadRequestResponse("Payment intent ID is required");
+      throw new BadResponse("Payment intent ID is required");
     }
 
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
