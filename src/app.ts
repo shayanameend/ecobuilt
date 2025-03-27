@@ -17,6 +17,7 @@ import { paymentRouter } from "@/controllers/payment";
 import { orderRouter } from "@/controllers/order";
 import { messageRouter } from "@/controllers/message";
 import { withdrawRouter } from "@/controllers/withdraw";
+import { conversationRouter } from "@/controllers/conversation";
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use("/api/payments", paymentRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/messages", messageRouter);
 app.use("/api/withdraws", withdrawRouter);
+app.use("/api/conversations", conversationRouter);
 
 // 404 Handler
 app.all("*", (_request, response) => {
