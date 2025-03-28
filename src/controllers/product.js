@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { catchAsync } from "../middlewares/catchAsync";
 import { BadResponse, NotFoundResponse } from "../lib/error";
-import { isAuthorized, isAuthenticated, isSeller } from "../middlewares/auth";
+import { isAuthorized, isUser, isShop } from "../middlewares/auth";
 import { ProductModel } from "../models/product";
 import { ShopModel } from "../models/shop";
 import { handleImageUpload, handleImageDelete } from "../utils/image";
@@ -48,7 +48,7 @@ router.get(
 
 router.get(
   "/admin",
-  isAuthenticated,
+  isUser,
   isAuthorized("Admin"),
   catchAsync(async (_request, response) => {
     const products = await ProductModel.find().sort({
@@ -70,7 +70,7 @@ router.get(
 // POST routes
 router.post(
   "/",
-  isSeller,
+  isShop,
   catchAsync(async (request, response) => {
     const { shopId, images, ...productData } = request.body;
 
@@ -102,7 +102,7 @@ router.post(
 // PUT routes
 router.put(
   "/:productId/review",
-  isAuthenticated,
+  isUser,
   catchAsync(async (request, response) => {
     const { rating, comment, orderId } = request.body;
     const { productId } = request.params;
@@ -159,7 +159,7 @@ router.put(
 // DELETE routes
 router.delete(
   "/:productId",
-  isSeller,
+  isShop,
   catchAsync(async (request, response) => {
     const product = await ProductModel.findById(request.params.productId);
     if (!product) {

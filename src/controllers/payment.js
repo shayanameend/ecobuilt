@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { catchAsync } from "../middlewares/catchAsync";
 import { BadResponse } from "../lib/error";
-import { isAuthenticated } from "../middlewares/auth";
+import { isUser } from "../middlewares/auth";
 import { env } from "../lib/env";
 
 import Stripe from "stripe";
@@ -15,7 +15,7 @@ const router = Router();
 // GET routes
 router.get(
   "/stripe-key",
-  isAuthenticated,
+  isUser,
   catchAsync(async (_request, response) => {
     return response.success(
       { data: { apiKey: env.STRIPE_API_KEY } },
@@ -27,7 +27,7 @@ router.get(
 // POST routes
 router.post(
   "/process",
-  isAuthenticated,
+  isUser,
   catchAsync(async (request, response) => {
     const { amount, currency = "usd" } = request.body;
 
@@ -58,7 +58,7 @@ router.post(
 
 router.post(
   "/confirm",
-  isAuthenticated,
+  isUser,
   catchAsync(async (request, response) => {
     const { paymentIntentId } = request.body;
 

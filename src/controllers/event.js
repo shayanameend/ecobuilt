@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { catchAsync } from "../middlewares/catchAsync";
 import { BadResponse, NotFoundResponse } from "../lib/error";
-import { isAuthorized, isAuthenticated, isSeller } from "../middlewares/auth";
+import { isAuthorized, isUser, isShop } from "../middlewares/auth";
 import { EventModel } from "../models/event";
 import { ShopModel } from "../models/shop";
 import { handleImageUpload, handleImageDelete } from "../utils/image";
@@ -48,7 +48,7 @@ router.get(
 
 router.get(
   "/admin",
-  isAuthenticated,
+  isUser,
   isAuthorized("Admin"),
   catchAsync(async (_request, response) => {
     const events = await EventModel.find().sort({ createdAt: -1 });
@@ -63,7 +63,7 @@ router.get(
 // POST routes
 router.post(
   "/",
-  isSeller,
+  isShop,
   catchAsync(async (request, response) => {
     const shop = await ShopModel.findById(request.body.shopId);
     if (!shop) {
@@ -90,7 +90,7 @@ router.post(
 // DELETE routes
 router.delete(
   "/:id",
-  isSeller,
+  isShop,
   catchAsync(async (request, response) => {
     const event = await EventModel.findById(request.params.id);
     if (!event) {

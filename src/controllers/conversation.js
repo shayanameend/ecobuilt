@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { catchAsync } from "../middlewares/catchAsync";
-import { isSeller, isAuthenticated } from "../middlewares/auth";
+import { isShop, isUser } from "../middlewares/auth";
 import { ConversationModel } from "../models/conversation";
 import { NotFoundResponse } from "../lib/error";
 
@@ -46,7 +46,7 @@ router.post(
 
 router.get(
   "/seller/:id",
-  isSeller,
+  isShop,
   catchAsync(async (request, response) => {
     const conversations = await ConversationModel.find({
       members: {
@@ -73,7 +73,7 @@ router.get(
 
 router.get(
   "/user/:id",
-  isAuthenticated,
+  isUser,
   catchAsync(async (request, response) => {
     const conversations = await ConversationModel.find({
       members: {

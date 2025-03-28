@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { catchAsync } from "../middlewares/catchAsync";
 import { BadResponse } from "../lib/error";
-import { isAuthenticated } from "../middlewares/auth";
+import { isUser } from "../middlewares/auth";
 import { MessageModel } from "../models/message";
 import { handleImageUpload } from "../utils/image";
 
@@ -9,7 +9,7 @@ const router = Router();
 
 router.post(
   "/",
-  isAuthenticated,
+  isUser,
   catchAsync(async (request, response) => {
     const { conversationId, text, sender, images } = request.body;
 

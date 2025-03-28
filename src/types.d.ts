@@ -30,7 +30,7 @@ declare global {
         email: string;
         role: string;
       };
-      seller: {
+      shop: {
         _id: ObjectId;
         name: string;
         email: string;

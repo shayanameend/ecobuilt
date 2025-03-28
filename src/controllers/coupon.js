@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { catchAsync } from "../middlewares/catchAsync";
 import { NotFoundResponse, BadResponse } from "../lib/error";
-import { isSeller } from "../middlewares/auth";
+import { isShop } from "../middlewares/auth";
 import { CouponModel } from "../models/coupon";
 
 const router = Router();
@@ -9,7 +9,7 @@ const router = Router();
 // GET routes
 router.get(
   "/seller/:id",
-  isSeller,
+  isShop,
   catchAsync(async (request, response) => {
     const coupons = await CouponModel.find({
       shopId: request.seller._id,
@@ -55,7 +55,7 @@ router.get(
 // POST routes
 router.post(
   "/",
-  isSeller,
+  isShop,
   catchAsync(async (request, response) => {
     const existingCoupon = await CouponModel.findOne({
       name: request.body.name,
@@ -81,7 +81,7 @@ router.post(
 // DELETE routes
 router.delete(
   "/:id",
-  isSeller,
+  isShop,
   catchAsync(async (request, response) => {
     const coupon = await CouponModel.findByIdAndDelete(request.params.id);
 

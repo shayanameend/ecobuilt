@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { catchAsync } from "../middlewares/catchAsync";
 import { NotFoundResponse, BadResponse } from "../lib/error";
-import { isAuthenticated, isSeller, isAuthorized } from "../middlewares/auth";
+import { isUser, isShop, isAuthorized } from "../middlewares/auth";
 import { OrderModel } from "../models/order";
 import { ShopModel } from "../models/shop";
 import { ProductModel } from "../models/product";
@@ -11,7 +11,7 @@ const router = Router();
 // GET routes
 router.get(
   "/user/:userId",
-  isAuthenticated,
+  isUser,
   catchAsync(async (request, response) => {
     const orders = await OrderModel.find({
       "user._id": request.params.userId,
@@ -30,7 +30,7 @@ router.get(
 
 router.get(
   "/seller/:shopId",
-  isSeller,
+  isShop,
   catchAsync(async (request, response) => {
     const orders = await OrderModel.find({
       "cart.shopId": request.params.shopId,
@@ -49,7 +49,7 @@ router.get(
 
 router.get(
   "/admin",
-  isAuthenticated,
+  isUser,
   isAuthorized("Admin"),
   catchAsync(async (_request, response) => {
     const orders = await OrderModel.find().sort({
@@ -71,7 +71,7 @@ router.get(
 // POST routes
 router.post(
   "/",
-  isAuthenticated,
+  isUser,
   catchAsync(async (request, response) => {
     const { cart, shippingAddress, user, totalPrice, paymentInfo } =
       request.body;
@@ -117,7 +117,7 @@ router.post(
 // PUT routes
 router.put(
   "/:orderId/status",
-  isSeller,
+  isShop,
   catchAsync(async (request, response) => {
     const { status } = request.body;
     if (!status) {
@@ -170,7 +170,7 @@ router.put(
 
 router.put(
   "/:orderId/refund-request",
-  isAuthenticated,
+  isUser,
   catchAsync(async (request, response) => {
     const order = await OrderModel.findById(request.params.orderId);
     if (!order) {
@@ -189,7 +189,7 @@ router.put(
 
 router.put(
   "/:orderId/refund-success",
-  isSeller,
+  isShop,
   catchAsync(async (request, response) => {
     const order = await OrderModel.findById(request.params.orderId);
     if (!order) {

@@ -8,7 +8,7 @@ import { ShopModel } from "@/models/shop";
 import { catchAsync } from "@/middlewares/catchAsync";
 import { env } from "@/lib/env";
 
-export const isAuthenticated = catchAsync(
+export const isUser = catchAsync(
   async (request: Request, _response: Response, next: NextFunction) => {
     const { auth_token } = request.cookies;
 
@@ -30,7 +30,7 @@ export const isAuthenticated = catchAsync(
   }
 );
 
-export const isSeller = catchAsync(
+export const isShop = catchAsync(
   async (request: Request, _response: Response, next: NextFunction) => {
     const { seller_token } = request.cookies;
     if (!seller_token) {
@@ -42,10 +42,10 @@ export const isSeller = catchAsync(
     const shop = await ShopModel.findById((decoded as jwt.JwtPayload)._id);
 
     if (!shop) {
-      throw new UnauthorizedResponse("Seller Not Found");
+      throw new UnauthorizedResponse("Shop Not Found");
     }
 
-    request.seller = shop;
+    request.shop = shop;
 
     next();
   }

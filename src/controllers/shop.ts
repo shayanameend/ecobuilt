@@ -5,37 +5,37 @@ import { BadResponse, NotFoundResponse } from "@/lib/error";
 import { catchAsync } from "@/middlewares/catchAsync";
 import { env } from "@/lib/env";
 import { handleImageUpload, handleImageDelete } from "@/utils/image";
-import { isAuthorized, isUser } from "@/middlewares/auth";
-import { removeUserToken, sendUserToken } from "@/utils/jwt";
+import { isAuthorized, isUser, isShop } from "@/middlewares/auth";
+import { removeShopToken, sendShopToken } from "@/utils/jwt";
 import { sendEmail } from "@/utils/mail";
-import { UserModel } from "@/models/user";
+import { ShopModel } from "@/models/shop";
 
 const router = Router();
 
 router.post(
   "/",
   catchAsync(async (request, response) => {
-    const { name, email, password, image } = request.body;
+    const { name, email, password, avatar } = request.body;
 
-    if (!name || !email || !password || !image) {
+    if (!name || !email || !password || !avatar) {
       throw new BadResponse("Invalid Body");
     }
 
-    const existingUser = await UserModel.findOne({ email });
+    const existingShop = await ShopModel.findOne({ email });
 
-    if (existingUser) {
-      throw new BadResponse("User Already Exists");
+    if (existingShop) {
+      throw new BadResponse("Shop Already Exists");
     }
 
-    const userData = {
+    const shopData = {
       name,
       email,
       password,
-      image,
+      avatar,
     };
 
     const verificationToken = jwt.sign(
-      userData,
+      shopData,
       env.EMAIL_VERIFICATION_SECRET,
       {
         expiresIn: "5m",
@@ -45,7 +45,7 @@ router.post(
     const verificationUrl = `${env.CLIENT_URL}/verification/${verificationToken}`;
 
     await sendEmail({
-      to: userData.email,
+      to: shopData.email,
       subject: "",
       text: verificationUrl,
     });
@@ -74,25 +74,27 @@ router.post(
       throw new BadResponse("Invalid Token");
     }
 
-    const { name, email, password, image } = decoded as JwtPayload;
+    const { name, email, password, avatar } = decoded as JwtPayload;
 
-    const existingUser = await UserModel.findOne({ email });
+    const existingShop = await ShopModel.findOne({ email });
 
-    if (existingUser) {
-      throw new BadResponse("User already exists");
+    if (existingShop) {
+      throw new BadResponse("Shop already exists");
     }
 
-    const uploadedImage = await handleImageUpload(image, "USERS");
+    const uploadedImage = await handleImageUpload(avatar, "SHOPS", {
+      width: 150,
+    });
 
-    const user = await UserModel.create({
+    const shop = await ShopModel.create({
       name,
       email,
+      avatar: uploadedImage,
       password,
-      image: uploadedImage,
     });
 
     // @ts-ignore
-    return sendUserToken(user, response);
+    return sendShopToken(shop, response);
   })
 );
 
@@ -105,34 +107,34 @@ router.post(
       throw new BadResponse("Invalid Body");
     }
 
-    const user = await UserModel.findOne({ email }).select("+password");
+    const shop = await ShopModel.findOne({ email }).select("+password");
 
-    if (!user) {
-      throw new NotFoundResponse("User Not Found");
+    if (!shop) {
+      throw new NotFoundResponse("Shop Not Found");
     }
 
     // @ts-ignore
-    const isPasswordValid = await user.compare(password);
+    const isPasswordValid = await shop.compare(password);
 
     if (!isPasswordValid) {
       throw new BadResponse("Invalid Credentials");
     }
 
     // @ts-ignore
-    return sendUserToken(user, response);
+    return sendShopToken(shop, response);
   })
 );
 
 router.get(
   "/me",
-  isUser,
+  isShop,
   catchAsync(async (request, response) => {
-    const user = request.user;
+    const shop = request.shop;
 
     return response.success(
       // @ts-ignore
-      { data: { user } },
-      { message: "User Retrieved Successfully" }
+      { data: { shop } },
+      { message: "Shop Retrieved Successfully" }
     );
   })
 );
@@ -140,13 +142,13 @@ router.get(
 router.get(
   "/logout",
   catchAsync(async (_request, response) => {
-    return removeUserToken(response);
+    return removeShopToken(response);
   })
 );
 
 router.put(
   "/info",
-  isUser,
+  isShop,
   catchAsync(async (request, response) => {
     const { name } = request.body;
 
@@ -160,30 +162,30 @@ router.put(
     return response.success(
       // @ts-ignore
       { data: { user } },
-      { message: "User Updated Successfully" }
+      { message: "Shop Updated Successfully" }
     );
   })
 );
 
 router.put(
   "/image",
-  isUser,
+  isShop,
   catchAsync(async (request, response) => {
-    const { image } = request.body;
+    const { avatar } = request.body;
 
-    if (!image) {
+    if (!avatar) {
       throw new BadResponse("Invalid Body");
     }
 
     const user = request.user;
 
     // @ts-ignore
-    await handleImageDelete([user.image.public_id]);
+    await handleImageDelete([user.avatar.public_id]);
 
-    const uploadedImage = await handleImageUpload(image, "USERS");
+    const uploadedImage = await handleImageUpload(avatar, "SHOPS");
 
     // @ts-ignore
-    user.image = uploadedImage;
+    user.avatar = uploadedImage;
 
     // @ts-ignore
     await user.save();
@@ -200,14 +202,14 @@ router.get(
   isUser,
   isAuthorized("SUPER_ADMIN"),
   catchAsync(async (_request, response) => {
-    const users = await UserModel.find().sort({
+    const users = await ShopModel.find().sort({
       createdAt: -1,
     });
 
     return response.success(
       // @ts-ignore
       { data: { users } },
-      { message: "Users Retrieved Successfully" }
+      { message: "Shops Retrieved Successfully" }
     );
   })
 );
@@ -226,15 +228,15 @@ router.delete(
     const user = request.user;
 
     // @ts-ignore
-    await handleImageDelete([user.image.public_id]);
+    await handleImageDelete([user.avatar.public_id]);
 
-    await UserModel.findByIdAndDelete(id);
+    await ShopModel.findByIdAndDelete(id);
 
     return response.success(
       { data: {} },
-      { message: "User Deleted Successfully" }
+      { message: "Shop Deleted Successfully" }
     );
   })
 );
 
-export const userRouter = router;
+export const shopRouter = router;
