@@ -8,10 +8,10 @@ const messageSchema = new mongoose.Schema(
     text: {
       type: String,
     },
-    sender: {
+    senderId: {
       type: String,
     },
-    images: {
+    image: {
       public_id: {
         type: String,
       },

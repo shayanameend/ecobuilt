@@ -15,9 +15,9 @@ const router = Router();
 router.post(
   "/",
   catchAsync(async (request, response) => {
-    const { name, email, password, avatar } = request.body;
+    const { name, email, password, image } = request.body;
 
-    if (!name || !email || !password || !avatar) {
+    if (!name || !email || !password || !image) {
       throw new BadResponse("Invalid Body");
     }
 
@@ -31,7 +31,7 @@ router.post(
       name,
       email,
       password,
-      avatar,
+      image,
     };
 
     const verificationToken = jwt.sign(
@@ -74,27 +74,25 @@ router.post(
       throw new BadResponse("Invalid Token");
     }
 
-    const { name, email, password, avatar } = decoded as JwtPayload;
+    const { name, email, password, image } = decoded as JwtPayload;
 
     const existingShop = await ShopModel.findOne({ email });
 
     if (existingShop) {
-      throw new BadResponse("Shop already exists");
+      throw new BadResponse("Shop Already Exists");
     }
 
-    const uploadedImage = await handleImageUpload(avatar, "SHOPS", {
-      width: 150,
-    });
+    const uploadedImage = await handleImageUpload(image, "USERS");
 
-    const shop = await ShopModel.create({
+    const user = await ShopModel.create({
       name,
       email,
-      avatar: uploadedImage,
       password,
+      image: uploadedImage,
     });
 
     // @ts-ignore
-    return sendShopToken(shop, response);
+    return sendUserToken(user, response);
   })
 );
 
