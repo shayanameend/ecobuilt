@@ -15,23 +15,23 @@ const router = Router();
 router.post(
   "/",
   catchAsync(async (request, response) => {
-    const { name, email, password, avatar } = request.body;
+    const { name, email, password, image } = request.body;
 
-    if (!name || !email || !password || !avatar) {
+    if (!name || !email || !password || !image) {
       throw new BadResponse("Invalid Body");
     }
 
     const existingUser = await UserModel.findOne({ email });
 
     if (existingUser) {
-      throw new BadResponse("User already exists");
+      throw new BadResponse("User Already Exists");
     }
 
     const userData = {
       name,
       email,
       password,
-      avatar,
+      image,
     };
 
     const verificationToken = jwt.sign(
@@ -74,7 +74,7 @@ router.post(
       throw new BadResponse("Invalid Token");
     }
 
-    const { name, email, password, avatar } = decoded as JwtPayload;
+    const { name, email, password, image } = decoded as JwtPayload;
 
     const existingUser = await UserModel.findOne({ email });
 
@@ -82,13 +82,13 @@ router.post(
       throw new BadResponse("User already exists");
     }
 
-    const uploadedImage = await handleImageUpload(avatar, "AVATARS");
+    const uploadedImage = await handleImageUpload(image, "USERS");
 
     const user = await UserModel.create({
       name,
       email,
       password,
-      avatar: uploadedImage,
+      image: uploadedImage,
     });
 
     // @ts-ignore
@@ -166,24 +166,24 @@ router.put(
 );
 
 router.put(
-  "/avatar",
+  "/image",
   isAuthenticated,
   catchAsync(async (request, response) => {
-    const { avatar } = request.body;
+    const { image } = request.body;
 
-    if (!avatar) {
+    if (!image) {
       throw new BadResponse("Invalid Body");
     }
 
     const user = request.user;
 
     // @ts-ignore
-    await handleImageDelete([user.avatar.public_id]);
+    await handleImageDelete([user.image.public_id]);
 
-    const uploadedImage = await handleImageUpload(avatar, "AVATARS");
+    const uploadedImage = await handleImageUpload(image, "USERS");
 
     // @ts-ignore
-    user.avatar = uploadedImage;
+    user.image = uploadedImage;
 
     // @ts-ignore
     await user.save();
@@ -215,7 +215,7 @@ router.get(
 router.delete(
   "/admin/:id",
   isAuthenticated,
-  isAuthorized("Admin"),
+  isAuthorized("SUPER_ADMIN"),
   catchAsync(async (request, response) => {
     const { id } = request.params;
 
@@ -226,7 +226,7 @@ router.delete(
     const user = request.user;
 
     // @ts-ignore
-    await handleImageDelete([user.avatar.public_id]);
+    await handleImageDelete([user.image.public_id]);
 
     await UserModel.findByIdAndDelete(id);
 

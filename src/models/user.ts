@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "user",
   },
-  avatar: {
+  image: {
     public_id: {
       type: String,
       required: true,

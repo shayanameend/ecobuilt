@@ -20,9 +20,9 @@ cloudinary.config({
 
 // Define allowed folders to prevent arbitrary folder creation
 export const CLOUDINARY_FOLDERS = {
-  PRODUCTS: "products",
+  USERS: "users",
   SHOPS: "shops",
-  AVATARS: "avatars",
+  PRODUCTS: "products",
   EVENTS: "events",
   MESSAGES: "messages",
 } as const;
