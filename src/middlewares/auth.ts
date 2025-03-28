@@ -10,18 +10,18 @@ import { env } from "@/lib/env";
 
 export const isAuthenticated = catchAsync(
   async (request: Request, _response: Response, next: NextFunction) => {
-    const { token } = request.cookies;
+    const { auth_token } = request.cookies;
 
-    if (!token) {
-      throw new UnauthorizedResponse("Please login to continue");
+    if (!auth_token) {
+      throw new UnauthorizedResponse("Invalid Token");
     }
 
-    const decoded = jwt.verify(token, env.JWT_SECRET_KEY);
+    const decoded = jwt.verify(auth_token, env.JWT_SECRET_KEY);
 
     const user = await UserModel.findById((decoded as jwt.JwtPayload)._id);
 
     if (!user) {
-      throw new UnauthorizedResponse("User not found");
+      throw new UnauthorizedResponse("User Not Found");
     }
 
     request.user = user;
@@ -34,7 +34,7 @@ export const isSeller = catchAsync(
   async (request: Request, _response: Response, next: NextFunction) => {
     const { seller_token } = request.cookies;
     if (!seller_token) {
-      throw new UnauthorizedResponse("Please login to continue");
+      throw new UnauthorizedResponse("Invalid Token");
     }
 
     const decoded = jwt.verify(seller_token, env.JWT_SECRET_KEY);
@@ -42,7 +42,7 @@ export const isSeller = catchAsync(
     const shop = await ShopModel.findById((decoded as jwt.JwtPayload)._id);
 
     if (!shop) {
-      throw new UnauthorizedResponse("Seller not found");
+      throw new UnauthorizedResponse("Seller Not Found");
     }
 
     request.seller = shop;

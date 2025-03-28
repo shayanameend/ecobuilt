@@ -29,13 +29,23 @@ export const sendUserToken = (user: UserDocument, response: Response): void => {
 
   response.cookie("auth_token", token, options);
 
-  response.success(
+  return response.success(
     {
       data: { user: user.toObject({ getters: true, versionKey: false }) },
       token,
     },
-    { message: "Authentication successful" }
+    { message: "Login Successful" }
   );
+};
+
+export const removeUserToken = (response: Response): void => {
+  const options = getCookieOptions();
+
+  options.expires = new Date(Date.now() - 1000);
+
+  response.cookie("auth_token", null, options);
+
+  return response.success({}, { message: "Logout Successful" });
 };
 
 export const sendShopToken = (shop: ShopDocument, response: Response): void => {
@@ -44,11 +54,21 @@ export const sendShopToken = (shop: ShopDocument, response: Response): void => {
 
   response.cookie("seller_token", token, options);
 
-  response.success(
+  return response.success(
     {
       data: { shop: shop.toObject({ getters: true, versionKey: false }) },
       token,
     },
-    { message: "Authentication successful" }
+    { message: "Login Successful" }
   );
+};
+
+export const removeShopToken = (response: Response): void => {
+  const options = getCookieOptions();
+
+  options.expires = new Date(Date.now() - 1000);
+
+  response.cookie("seller_token", null, options);
+
+  return response.success({}, { message: "Logout Successful" });
 };
