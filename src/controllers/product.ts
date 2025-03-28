@@ -24,30 +24,6 @@ router.get(
   })
 );
 
-router.get(
-  "/shop/:shopId",
-  catchAsync(async (request, response) => {
-    const { shopId } = request.params;
-
-    if (!shopId) {
-      throw new BadResponse("Invalid Params");
-    }
-
-    const products = await ProductModel.find({
-      shopId,
-    }).sort({
-      createdAt: -1,
-      updatedAt: -1,
-    });
-
-    return response.success(
-      // @ts-ignore
-      { data: { products } },
-      { message: "Products Retrieved Successfully" }
-    );
-  })
-);
-
 router.post(
   "/",
   isShop,
